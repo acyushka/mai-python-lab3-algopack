@@ -75,8 +75,11 @@ def bucket(
         a: list[float] = typer.Argument(..., help="Список вещественных чисел"),
         buckets: int = typer.Option(None, "--buckets", "-b", help="Желаемое кол-во корзин"),
 ) -> None:
-    result = container.sorting.bucket_sort(a, buckets)
-    typer.echo(f"Результат: {result}")
+    try:
+        result = container.sorting.bucket_sort(a, buckets)
+        typer.echo(f"Результат: {result}")
+    except RecursionError as e:
+        typer.echo(f"Ошибка: {e}", err=True)
 
 
 @app.command()

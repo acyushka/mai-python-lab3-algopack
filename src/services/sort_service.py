@@ -85,32 +85,36 @@ class SortingService(Generic[T]):
         return a
 
     def bucket_sort(self, a: list[float], buckets: int | None = None) -> list[float]:
-        if len(a) < 2:
-            return a
+        try:
+            if len(a) < 2:
+                return a
 
-        n = len(a)
-        if buckets is None:
-            buckets = int(math.sqrt(n))
+            n = len(a)
+            if buckets is None:
+                buckets = int(math.sqrt(n))
 
-        min_val = min(a)
-        max_val = max(a)
-        range_val = max_val - min_val
-        if range_val == 0:
-            return a
+            min_val = min(a)
+            max_val = max(a)
+            range_val = max_val - min_val
+            if range_val == 0:
+                return a
 
-        buckets_list = [[] for _ in range(buckets)]
+            buckets_list = [[] for _ in range(buckets)]
 
-        for x in a:
-            idx = int(((x - min_val) * buckets) / (range_val + 1e-9))
-            idx = min(idx, buckets - 1)
-            buckets_list[idx].append(x)
+            for x in a:
+                idx = int(((x - min_val) * buckets) / (range_val + 1e-9))
+                idx = min(idx, buckets - 1)
+                buckets_list[idx].append(x)
 
-        output = []
-        for b in buckets_list:
-            sorted_bucket = self.bucket_sort(b, buckets)
-            output.extend(sorted_bucket)
+            output = []
+            for b in buckets_list:
+                sorted_bucket = self.bucket_sort(b, buckets)
+                output.extend(sorted_bucket)
 
-        return output
+            return output
+        except RecursionError as e:
+            raise RecursionError("Вы закинули во входные данные фигню, возникла бесконечная рекурсия")
+
 
     def heap_sort(self, a: list[int]) -> list[int]:
         n = len(a)
